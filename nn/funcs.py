@@ -37,8 +37,7 @@ def batch_hits(x, y):
     return np.sum(np.argmax(x, axis=1) == y)
 
 def mean_absolute_error(x, y):
-    # Add 1e-15 to avoid division by zero
-    return 1/(np.abs(x - y) + 1e-15)
+    return np.abs(x - y)
 
 def tanh(x):
     return np.tanh(x)
