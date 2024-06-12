@@ -5,25 +5,24 @@ from nn.model import model
 from nn.funcs import *
 import numpy as np
 
-def test(ds, verbose=False, phase="Validation"):
+def test(ds, verbose=False, phase="Validation", acc_func=batch_hits):
     ds.reset()
     hits = 0
     mean_loss = 0
     while not(ds.iter_done()):
         x, y = ds.next()
         o, batch_loss = nn.forward(x, y, train=False)
-        print(o)
-        hits += batch_hits(o, y)
-        mean_loss += np.mean(batch_loss)
+        hits += np.sum(acc_func(o, y))
+        mean_loss += np.sum(batch_loss)
         #if verbose:
         #    print("Loss: " + str(mean_loss), " Predicted: " + str(o), " Expected: " + str(y))
     accuracy = float(hits) / float(ds.size)
     mean_loss = float(mean_loss) / float(ds.size)
     if verbose:
-        print(phase + " Accuracy: " + str(accuracy) + " Mean Loss " + str(mean_loss))
+        print(f"{phase} Accuracy: {str(accuracy)} Mean Loss {str(mean_loss)}")
     return accuracy, mean_loss
 
-def train(nn, hp, val_hist, train_hist, logger):
+def train(nn, hp, val_hist, train_hist, logger, acc_func=batch_hits):
     cur_epoch = 1
     cur_iter = 1
     for i in range(1, hp.epochs+1):
@@ -37,9 +36,9 @@ def train(nn, hp, val_hist, train_hist, logger):
             nn.backward(y,o)
             nn.update(hp.lr)
 
-            hits += batch_hits(o, y)
+            hits += np.sum(acc_func(o, y))
             cur_trained += len(x)
-            train_loss += np.mean(batch_loss)
+            train_loss += np.sum(batch_loss)
 
             if cur_iter % hp.validate_every_no_of_batches == 0:
 
@@ -50,30 +49,13 @@ def train(nn, hp, val_hist, train_hist, logger):
                 hits = 0
                 train_loss = 0
 
-                val_accuracy, val_loss = test(hp.ds_val, True)
+                val_accuracy, val_loss = test(hp.ds_val, True, acc_func=acc_func)
                 val_hist.add(cur_iter, val_loss, val_accuracy)
                 logger.write( (cur_epoch, "Val", cur_iter, val_accuracy, val_loss) )
             cur_iter+=1
         cur_epoch+=1
         hp.ds_train.reset()
     return val_hist
-
-#load hyperparameters and settings according to dataset enum
-hp = hyperparams(ConfigEnum.XOR)
-#hp = hyperparams(ConfigEnum.IRIS)
-#hp = hyperparams(ConfigEnum.MNIST)
-
-#model has number of inputs, number of outputs, and list with sizes of hidden layers
-#requires at least 1 hidden layer, else fails assert
-nn = model(hp.input_size, hp.output_size, hp.hidden_shapes, sigmoid, sigmoid_grad, has_dropout=hp.has_dropout, dropout_perc=hp.dropout_perc)
-
-val_hist = historian()
-train_hist = historian()
-logger = nnlogger(hp.output_log, ("Epoch", "Phase", "Iteration", "Accuracy", "Loss") )
-train(nn, hp, val_hist, train_hist, logger)
-test(hp.ds_test, verbose=True, phase="Test")
-nnplotter.view(val_hist, train_hist) #see results on plot
-logger.close()
 
 
 '''

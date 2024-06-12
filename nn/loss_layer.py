@@ -43,7 +43,7 @@ class mse_loss_layer(op):
         return self.o
 
     def backward(self, y, rewards=None):
-        self.grads = 2 * (self.o - y)
+        self.grads = -2 * (self.o - y)
 
     def loss(self, y):
-        return np.mean(np.square(self.o - y))
+        return np.square(np.subtract(self.o, y))

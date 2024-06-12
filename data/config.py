@@ -1,5 +1,5 @@
 class ConfigEnum:
-    XOR, IRIS, MNIST, SIMPLE_REGRESSION = range(4)
+    XOR, IRIS, MNIST, SIMPLE_REG, SIN = range(5)
 
 
 # factory-like class which produces different configs for each dataset tested
@@ -12,8 +12,10 @@ class hyperparams:
             import data.config_iris as config
         elif config_enum == ConfigEnum.MNIST:
             import data.config_mnist as config
-        else:
+        elif config_enum == ConfigEnum.SIMPLE_REG:
             import data.config_simple_regression as config
+        else:
+            import data.config_sin as config
         self.config = config
         self.batch_size = config.batch_size
         self.validate_every_no_of_batches = config.validate_every_no_of_batches
