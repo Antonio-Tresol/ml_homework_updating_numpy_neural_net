@@ -3,3 +3,14 @@ runs/iris_log.txt
 runs/nmist.ds
 runs/nmist_log.txt
 runs/xor_log.txt
+data/__pycache__/config_iris.cpython-312.pyc
+data/__pycache__/config_simple_regression.cpython-312.pyc
+data/__pycache__/config.cpython-312.pyc
+data/__pycache__/dataset.cpython-312.pyc
+nn/__pycache__/dense.cpython-312.pyc
+nn/__pycache__/funcs.cpython-312.pyc
+nn/__pycache__/loss_layer.cpython-312.pyc
+nn/__pycache__/model.cpython-312.pyc
+nn/__pycache__/op.cpython-312.pyc
+report/__pycache__/dumps.cpython-312.pyc
+runs/regression_log.txt
