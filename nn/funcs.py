@@ -43,7 +43,7 @@ def tanh(x):
     return tanhFunc(x)
 
 def tanh_grad(x):
-    return 1 - tanhFunc(x) ** 2
+    return 1 - np.power(x, 2)
 
 def tanhFunc(x):
     max_exp_argument = np.log(np.finfo(np.float64).max)  
