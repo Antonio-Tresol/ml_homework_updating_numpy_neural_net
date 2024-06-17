@@ -64,4 +64,4 @@ def tanh_np(x):
     return np.tanh(x)
 
 def tanh_grad_np(x):
-    return 1 - np.tanh(x) ** 2
+    return 1 - np.power(x, 2)
