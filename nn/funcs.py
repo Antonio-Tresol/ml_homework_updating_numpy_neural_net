@@ -40,8 +40,22 @@ def mean_absolute_error(x, y):
     return np.abs(x - y)
 
 def tanh(x):
-    return np.tanh(x)
-
+    return tanhFunc(x)
+    # return np.tanh(x)
 
 def tanh_grad(x):
-    return 1 - np.tanh(x) ** 2
+    return 1 - tanhFunc(x) ** 2
+    # return 1 - np.tanh(x) ** 2
+
+def tanhFunc(x):
+    max_exp_argument = np.log(np.finfo(np.float64).max)  
+    min_exp_argument = np.log(np.finfo(np.float64).tiny) 
+    
+    clipped_x = np.clip(x, min_exp_argument, max_exp_argument)
+    
+    numerator = np.exp(clipped_x) - np.exp(-clipped_x)   # e^x - e^-x
+                                                         # -----------
+    denominator = np.exp(clipped_x) + np.exp(-clipped_x) # e^x + e^-x
+
+    tanh_value = numerator / denominator
+    return tanh_value
